@@ -70,7 +70,7 @@ func run(client HTTPClient) {
 		wg.Add(1)
 
 		// copying is needed
-		st := make([]byte, len(searchTerm))
+		st := make([]byte, len(searchTerm) - 1)
 		copy(st, searchTerm)
 
 		go func() {
@@ -221,8 +221,7 @@ func printAsTable(searchResults []*searchResult) {
 	t.AppendHeader(table.Row{"Name", "Seeders", "Leechers", "Created At", "Size"})
 
 	for _, result := range searchResults {
-		t.AppendRow(table.Row{"Search term: " + result.Term})
-		t.AppendRow(table.Row{""})
+		t.AppendRow(table.Row{"(" + result.Term + ")"})
 
 		for _, torrent := range result.Torrents {
 			t.AppendRow(table.Row{
