@@ -49,8 +49,8 @@ type searchResult struct {
 }
 
 type arguments struct {
-	searchTerms []string
-	resultsPerTerm int
+	searchTerms      []string
+	resultsPerTerm   int
 	searchTermSuffix string
 }
 
@@ -116,7 +116,7 @@ func parseArguments() *arguments {
 
 	flag.Parse()
 
-	if (*resultsPerTermPtr < 1) {
+	if *resultsPerTermPtr < 1 {
 		log.Fatal("Number of results per search term must be at least 1")
 	}
 
@@ -132,8 +132,8 @@ func parseArguments() *arguments {
 	}
 
 	return &arguments{
-		searchTerms: searchTerms,
-		resultsPerTerm: *resultsPerTermPtr,
+		searchTerms:      searchTerms,
+		resultsPerTerm:   *resultsPerTermPtr,
 		searchTermSuffix: *searchTermsSuffixPtr,
 	}
 }
