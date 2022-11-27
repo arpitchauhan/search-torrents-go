@@ -72,12 +72,17 @@ func run(client HTTPClient) {
 		wg.Add(1)
 
 		// copying is needed
-		st := make([]byte, len(searchTerm) - 1)
+		st := make([]byte, len(searchTerm))
 		copy(st, searchTerm)
 
 		go func() {
 			defer wg.Done()
-			sr, err := fetchSearchResult(client, string(st), resultsPerTerm, resultsChan)
+			sr, err := fetchSearchResult(
+				client,
+				string(st),
+				resultsPerTerm,
+				resultsChan,
+			)
 
 			if err != nil {
 				log.Print(err)
@@ -153,7 +158,7 @@ func determineFinalSearchTerms(originalSearchTerms []string, suffix string) []st
 	finalSearchTerms := []string{}
 
 	for _, ost := range originalSearchTerms {
-		finalSearchTerms = append(finalSearchTerms, ost + " " + suffix)
+		finalSearchTerms = append(finalSearchTerms, strings.TrimSpace(ost+" "+suffix))
 	}
 
 	return finalSearchTerms
