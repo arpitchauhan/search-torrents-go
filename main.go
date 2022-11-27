@@ -131,7 +131,7 @@ func getDefaultSearchTerms() []string {
 		log.Fatalf("Error while reading default search terms from file: %s", err)
 	}
 
-	searchTerms := strings.Split(string(fileContents), "\n")
+	searchTerms := removeEmptyStrings(strings.Split(string(fileContents), "\n"))
 
 	if len(searchTerms) == 0 {
 		log.Fatal("No search terms in default search terms file")
@@ -194,20 +194,24 @@ func extractTorrents(doc *goquery.Document, torrentsPerTerm int) []*torrent {
 
 		row.Each(func(j int, col *goquery.Selection) {
 			allCols := strings.Split(col.Text(), "\n")
-
-			filledCols := []string{}
-
-			for _, val := range allCols {
-				if val != "" {
-					filledCols = append(filledCols, val)
-				}
-			}
-
+			filledCols := removeEmptyStrings(allCols)
 			torrents = append(torrents, newTorrent(filledCols...))
 		})
 	})
 
 	return torrents
+}
+
+func removeEmptyStrings(strArray []string) []string {
+	var result []string
+
+	for _, str := range strArray {
+		if str != "" {
+			result = append(result, str)
+		}
+	}
+
+	return result
 }
 
 func printAsTable(searchResults []*searchResult) {
