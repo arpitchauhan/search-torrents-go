@@ -13,6 +13,7 @@ import (
 )
 
 const searchProviderDomain = "1337x.to"
+const defaultSearchTermsFilePath = "default_search_terms.txt"
 
 type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
@@ -105,13 +106,15 @@ func parseArguments() *arguments {
 		log.Fatal("Number of results per search term must be at least 1")
 	}
 
-	if *searchTermsPtr == "" {
-		log.Fatal("Search terms must be provided")
-	}
+	var searchTerms []string
 
-	searchTerms := strings.Split(*searchTermsPtr, ",")
-	if len(searchTerms) == 0 {
-		log.Fatal("Search terms must be provided")
+	if *searchTermsPtr == "" {
+		searchTerms = getDefaultSearchTerms()
+	} else {
+		searchTerms = strings.Split(*searchTermsPtr, ",")
+		if len(searchTerms) == 0 {
+			log.Fatal("Search terms must be provided")
+		}
 	}
 
 	return &arguments{
@@ -119,6 +122,22 @@ func parseArguments() *arguments {
 		resultsPerTerm: *resultsPerTermPtr,
 		searchTermSuffix: *searchTermsSuffixPtr,
 	}
+}
+
+func getDefaultSearchTerms() []string {
+	fileContents, err := os.ReadFile(defaultSearchTermsFilePath)
+
+	if err != nil {
+		log.Fatalf("Error while reading default search terms from file: %s", err)
+	}
+
+	searchTerms := strings.Split(string(fileContents), "\n")
+
+	if len(searchTerms) == 0 {
+		log.Fatal("No search terms in default search terms file")
+	}
+
+	return searchTerms
 }
 
 func determineFinalSearchTerms(originalSearchTerms []string, suffix string) []string {
