@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -22,7 +23,7 @@ type HTTPClient interface {
 }
 
 func main() {
-	run(&http.Client{})
+	run(&http.Client{}, os.Stdout)
 }
 
 type torrent struct {
@@ -54,7 +55,7 @@ type arguments struct {
 	searchTermSuffix string
 }
 
-func run(client HTTPClient) {
+func run(client HTTPClient, w io.Writer) {
 	arguments := parseArguments()
 
 	resultsPerTerm := arguments.resultsPerTerm
@@ -100,7 +101,7 @@ func run(client HTTPClient) {
 	}
 
 	sortResultsBySearchTerm(results)
-	printAsTable(results)
+	printAsTable(w, results)
 }
 
 func sortResultsBySearchTerm(results []*searchResult) {
@@ -228,9 +229,9 @@ func removeEmptyStrings(strArray []string) []string {
 	return result
 }
 
-func printAsTable(searchResults []*searchResult) {
+func printAsTable(w io.Writer, searchResults []*searchResult) {
 	t := table.NewWriter()
-	t.SetOutputMirror(os.Stdout)
+	t.SetOutputMirror(w)
 
 	t.AppendHeader(table.Row{"Name", "Seeders", "Leechers", "Created At", "Size"})
 
