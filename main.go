@@ -6,8 +6,10 @@ import (
 	"net/http"
 	"os"
 
+	"sort"
 	"strings"
 	"sync"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/jedib0t/go-pretty/v6/table"
 )
@@ -92,7 +94,14 @@ func run(client HTTPClient) {
 		results = append(results, result)
 	}
 
+	sortResultsBySearchTerm(results)
 	printAsTable(results)
+}
+
+func sortResultsBySearchTerm(results []*searchResult) {
+	sort.Slice(results, func(i, j int) bool {
+		return results[i].Term < results[j].Term
+	})
 }
 
 func parseArguments() *arguments {
