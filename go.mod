@@ -1,6 +1,7 @@
 module arpit/search-torrents
 
 go 1.22
+toolchain go1.24.1
 
 require (
 	github.com/PuerkitoBio/goquery v1.9.1
@@ -11,6 +12,6 @@ require (
 	github.com/andybalholm/cascadia v1.3.2 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
-	golang.org/x/net v0.24.0 // indirect
-	golang.org/x/sys v0.19.0 // indirect
+	golang.org/x/net v0.38.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
 )
